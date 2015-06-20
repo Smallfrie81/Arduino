@@ -1,0 +1,59 @@
+
+//This is code to put out any signed integer to a seven segment display using a bit shift register.
+
+int number[12]   = {80,95,50,22,29,148,144,94,16,28,191,16};  //Values 0 through 9 on a 7-segment LED display, negative symbol is 10 and subtract 11 from any number to put a decimal
+int shiftPins[3] = {7,8,9};  // (clock pin, data pin, latch pin)
+int digitPins[4] = {2,3,4,6}; // (ones, tens, hundreds, thousands)
+int show[4]; // (thousands, hundreds, tens, ones)
+
+
+void setup(){
+  pinMode(digitPins[0], OUTPUT);
+  pinMode(digitPins[1], OUTPUT);
+  pinMode(digitPins[2], OUTPUT);
+  pinMode(digitPins[3], OUTPUT);
+  
+  pinMode(shiftPins[0], OUTPUT);
+  pinMode(shiftPins[1], OUTPUT);
+  pinMode(shiftPins[2], OUTPUT);
+  pinMode(5,INPUT);
+}
+
+void loop(){
+ 
+  print2LEDs(30-millis()/1000);
+  
+}
+
+void print2LEDs(int number2show){
+  
+  if(number2show >= 0){
+    
+    show[0] = ((int)number2show/1000);
+    show[1] = ((int)number2show%1000)/100;
+    show[3] = (((int)number2show%1000)%100)/10;
+    show[2] = ((((int)number2show%1000)%100)%10);
+    }
+  else {
+    number2show = -(number2show);
+    show[0] = 10;
+    show[1] = ((int)number2show%1000)/100;
+    show[3] = (((int)number2show%1000)%100)/10;
+    show[2] = ((((int)number2show%1000)%100)%10);
+  }
+  showDigit(show[0],digitPins[0]);
+  showDigit(show[1],digitPins[1]);
+  showDigit(show[2],digitPins[2]);
+  showDigit(show[3],digitPins[3]);
+}
+
+void showDigit(int i, int f){
+  
+  digitalWrite(shiftPins[2], 0);
+  digitalWrite(f, 1);
+  
+  shiftOut(shiftPins[1], shiftPins[0], LSBFIRST, number[i]);
+  
+  digitalWrite(f, 0);  
+  digitalWrite(shiftPins[2], 1);
+}
