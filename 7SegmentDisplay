@@ -1,60 +1,61 @@
 //Puts out any signed integer to a seven segment display using a bit shift register.
 
-    #define MINUS_SIGN 10
+#define MINUS_SIGN 10
 
-    int number[12] = {0x50,0x5F,0x32,0x16,0x1D,0x94,0x90,0x5E,0x10,0x1C,0xBF,0x10};  
-    /*Bit-patterns for 7-segment display, negative symbol is 10
-    subtract number[11] from any number to put a decimal */
-    int shiftPins[3] = {7,8,9};  // (clock pin, data pin, latch pin)
-    int digitPins[4] = {2,3,4,6}; // (ones, tens, hundreds, thousands)
-    int digit2show[4]; // (thousands, hundreds, tens, ones)
+int number[12] = {0x50,0x5F,0x32,0x16,0x1D,0x94,0x90,0x5E,0x10,0x1C,0xBF,0x10};  
+/*Bit-patterns for 7-segment display, negative symbol is 10
+subtract number[11] from any number to put a decimal */
+int shiftPins[3] = {7,8,9};  // (clock pin, data pin, latch pin)
+int digitPins[4] = {2,3,4,6}; // (ones, tens, hundreds, thousands)
+int digit2show[4]; // (thousands, hundreds, tens, ones)
 
 
-    void setup()
-    {
-      pinMode(digitPins[0], OUTPUT);
-      pinMode(digitPins[1], OUTPUT);
-      pinMode(digitPins[2], OUTPUT);
-      pinMode(digitPins[3], OUTPUT);
+void setup()
+{
+  pinMode(digitPins[0], OUTPUT);
+  pinMode(digitPins[1], OUTPUT);
+  pinMode(digitPins[2], OUTPUT);
+  pinMode(digitPins[3], OUTPUT);
 
-      pinMode(shiftPins[0], OUTPUT);
-      pinMode(shiftPins[1], OUTPUT);
-      pinMode(shiftPins[2], OUTPUT);
-    }
+  pinMode(shiftPins[0], OUTPUT);
+  pinMode(shiftPins[1], OUTPUT);
+  pinMode(shiftPins[2], OUTPUT);
+}
 
-    void loop()
-    {
-      print2LEDs(30-millis()/1000); //Count down from 30 to -999
-    }
+void loop()
+{
+  print2LEDs(30-millis()/1000); //Count down from 30 to -999
+}
 
-    void print2LEDs(int number2show)
-    {
-      if(number2show >= 0)
-      {
-        digit2show[0] = (number2show/1000) % 10;
-      } else
-      {
-        digit2show[0] = MINUS_SIGN;
-        number2show = -number2show;
-      }
+void print2LEDs(int number2show)
+{
+  if(number2show >= 0)
+  {
+    digit2show[0] = (number2show/1000) % 10;
+  } 
+    else
+  {
+    digit2show[0] = MINUS_SIGN;
+    number2show = -number2show;
+  }
   
-      show[1] = (number2show / 100) % 10;
-      show[2] = (number2show /  10) % 10;
-      show[3] = (number2show % 10);
+  show[1] = (number2show / 100) % 10;
+  show[2] = (number2show /  10) % 10;
+  show[3] = (number2show % 10);
 
-      for (int i=0; i < 4; i++) 
-      {
-        showDigit(digit2show[i], digitPins[i]);
-      }
-    }
+  for (int i=0; i < 4; i++) 
+  {
+    showDigit(digit2show[i], digitPins[i]);
+  }
+}
 
-    void showDigit(int digit2show, int activeDigit)
-    {
-      digitalWrite(shiftPins[2], 0);
-      digitalWrite(activeDigit, 1);
+void showDigit(int digit2show, int activeDigit)
+{
+  digitalWrite(shiftPins[2], 0);
+  digitalWrite(activeDigit, 1);
 
-      shiftOut(shiftPins[1], shiftPins[0], LSBFIRST, number[digit2show]);
+  shiftOut(shiftPins[1], shiftPins[0], LSBFIRST, number[digit2show]);
 
-      digitalWrite(activeDigit, 0);  
-      digitalWrite(shiftPins[2], 1);
-    }
+  digitalWrite(activeDigit, 0);  
+  digitalWrite(shiftPins[2], 1);
+}
