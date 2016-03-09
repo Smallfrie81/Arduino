@@ -39,9 +39,9 @@ void print2LEDs(int number2show)
     number2show = -number2show;
   }
   
-  show[1] = (number2show / 100) % 10;
-  show[2] = (number2show /  10) % 10;
-  show[3] = (number2show % 10);
+  digit2show[1] = (number2show / 100) % 10;
+  digit2show[2] = (number2show /  10) % 10;
+  digit2show[3] = (number2show % 10);
 
   for (int i=0; i < 4; i++) 
   {
